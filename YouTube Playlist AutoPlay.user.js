@@ -4,7 +4,7 @@
 // @version      1.0
 // @description  AutoPlay next Playlist item in YouTube
 // @author       CrazyRabbit
-// @homepage     https://github.com/crazyrabbit0
+// @homepage     https://github.com/crazyrabbit0/UserScripts/raw/main/YouTube%20Playlist%20AutoPlay.user.js
 // @match        https://www.youtube.com/watch?v=*&list=*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
 // @grant        none
