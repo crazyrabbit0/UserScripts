@@ -1,14 +1,18 @@
 // ==UserScript==
 // @name		YouTube Playlist AutoPlay
 // @namespace		https://github.com/crazyrabbit0
-// @version		1.2
+// @version		1.0.3
 // @description		AutoPlay next Playlist item in YouTube
 // @author		CrazyRabbit
 // @match		https://www.youtube.com/watch?v=*&list=*
 // @icon		https://www.google.com/s2/favicons?sz=64&domain=youtube.com
 // @grant		none
 // @license		GPL-3.0-or-later; http://www.gnu.org/licenses/gpl-3.0.txt
-// @homepage		https://github.com/crazyrabbit0/UserScripts
+// @copyright		2023+, CrazyRabbit (https://github.com/crazyrabbit0)
+// @homepageURL		https://github.com/crazyrabbit0/UserScripts
+// @supportURL		https://github.com/crazyrabbit0/UserScripts/issues/new?assignees=crazyrabbit0&labels=help+wanted&template=&title=YouTube%20Playlist%20AutoPlay%20-%20Issue
+// @downloadURL		https://github.com/crazyrabbit0/UserScripts/raw/main/YouTube%20Playlist%20AutoPlay.user.js
+// @updateURL		https://github.com/crazyrabbit0/UserScripts/raw/main/YouTube%20Playlist%20AutoPlay.user.js
 // ==/UserScript==
 
 (function() {
