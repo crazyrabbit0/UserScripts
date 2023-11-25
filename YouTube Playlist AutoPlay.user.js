@@ -1,12 +1,13 @@
 // ==UserScript==
 // @name		YouTube Playlist AutoPlay
 // @namespace		https://github.com/crazyrabbit0
-// @version		1.0
+// @version		1.2
 // @description		AutoPlay next Playlist item in YouTube
 // @author		CrazyRabbit
 // @match		https://www.youtube.com/watch?v=*&list=*
 // @icon		https://www.google.com/s2/favicons?sz=64&domain=youtube.com
 // @grant		none
+// @license		GPL-3.0-or-later; http://www.gnu.org/licenses/gpl-3.0.txt
 // @homepage		https://github.com/crazyrabbit0/UserScripts
 // ==/UserScript==
 
