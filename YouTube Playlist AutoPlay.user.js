@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name		YouTube Playlist AutoPlay
 // @namespace		https://github.com/crazyrabbit0
-// @version		1.0.3
+// @version		1.0.5
 // @description		AutoPlay next Playlist item in YouTube
 // @author		CrazyRabbit
 // @match		https://www.youtube.com/watch?v=*&list=*
@@ -13,8 +13,11 @@
 // @supportURL		https://github.com/crazyrabbit0/UserScripts/issues/new?assignees=crazyrabbit0&labels=help+wanted&template=&title=YouTube%20Playlist%20AutoPlay%20-%20Issue
 // @downloadURL		https://github.com/crazyrabbit0/UserScripts/raw/main/YouTube%20Playlist%20AutoPlay.user.js
 // @updateURL		https://github.com/crazyrabbit0/UserScripts/raw/main/YouTube%20Playlist%20AutoPlay.user.js
+// @run-at		document-start
+// @noframes
 // ==/UserScript==
 
+// jshint esversion: 6
 (function() {
 	'use strict';
 	
