@@ -1,91 +1,110 @@
 // ==UserScript==
-// @name		YouTube Playlist AutoPlay
-// @namespace		https://github.com/crazyrabbit0
-// @version		1.1.1.test
-// @description		AutoPlay next Playlist item in YouTube
-// @author		CrazyRabbit
-// @match		https://www.youtube.com/watch?v=*&list=*
-// @icon		https://www.google.com/s2/favicons?sz=64&domain=youtube.com
-// @grant		none
-// @license		GPL-3.0-or-later; http://www.gnu.org/licenses/gpl-3.0.txt
-// @copyright		2023+, CrazyRabbit (https://github.com/crazyrabbit0)
-// @homepageURL		https://github.com/crazyrabbit0/UserScripts
-// @supportURL		https://github.com/crazyrabbit0/UserScripts/issues/new?assignees=crazyrabbit0&labels=help+wanted&template=&title=YouTube%20Playlist%20AutoPlay%20-%20Issue
-// @downloadURL		https://github.com/crazyrabbit0/UserScripts/raw/master/YouTube%20Playlist%20AutoPlay.user.js
-// @updateURL		https://github.com/crazyrabbit0/UserScripts/raw/master/YouTube%20Playlist%20AutoPlay.user.js
-// @run-at		document-start
+// @name            YouTube Playlist AutoPlay
+// @namespace       https://github.com/crazyrabbit0
+// @version         2.1.0.test
+// @description     AutoPlay next Playlist item in YouTube
+// @author          CrazyRabbit
+// @match           http://*.youtube.com/*
+// @match           https://*.youtube.com/*
+// @icon            https://www.google.com/s2/favicons?sz=64&domain=youtube.com
+// @grant           none
+// @license         GPL-3.0-or-later; http://www.gnu.org/licenses/gpl-3.0.txt
+// @copyright       2023+, CrazyRabbit (https://github.com/crazyrabbit0)
+// @homepageURL     https://github.com/crazyrabbit0/UserScripts
+// @supportURL      https://github.com/crazyrabbit0/UserScripts/issues/new?assignees=crazyrabbit0&labels=help+wanted&template=&title=YouTube%20Playlist%20AutoPlay%20-%20Issue
+// @downloadURL     https://github.com/crazyrabbit0/UserScripts/raw/master/YouTube%20Playlist%20AutoPlay.user.js
+// @updateURL       https://github.com/crazyrabbit0/UserScripts/raw/master/YouTube%20Playlist%20AutoPlay.user.js
+// @run-at          document-start
 // @noframes
 // ==/UserScript==
 
-(() => {
-	'use strict';
-	/* jshint esversion: 6 */
-	/* global globalThis */
+(function() {
+    'use strict'
 
-	new MutationObserver((document_mutations, document_observer) => {
-		let play_time	= document.querySelector('span[class="ytp-time-current"]')
-		let loop	= document.querySelector('ytd-playlist-loop-button-renderer')
-		let progress	= document.querySelector('yt-page-navigation-progress')
-		let ads		= document.querySelector('.video-ads.ytp-ad-module')
+    let elements = {
+        player: null,
+        next_video: null,
+        progress: null,
+        loop: null
+    }
 
-		if (play_time && loop && progress && !ads) {
-			new MutationObserver(play_time_mutations => {
-				for (const mutation of play_time_mutations) {
-					let has_finished	= play_time.textContent === document.querySelector('span[class="ytp-time-duration"]').textContent;
-					let has_next_item	= document.querySelector('ytd-playlist-panel-video-renderer[selected] + ytd-playlist-panel-video-renderer') !== null;
-					let isnt_video_loop	= loop.querySelector('path').getAttribute('d').substring(0, 3) !== 'M13';
+    let loop = {
+        code: null,
+        value: null,
+        map: {
+            //'M21': '',
+            'M20': 'playlist',
+            'M13': 'video'
+        }
+    }
 
-					if (has_finished && has_next_item && isnt_video_loop) {
-						document.querySelector('a.ytp-next-button').click();
-					}
-					//console.log('play_time');
-				}
-			}).observe(play_time, {
-				childList: true
-			});
-			
-			loop.addEventListener('click', () => {
-				if (globalThis.hasOwnProperty('skip_loop_click')) {
-					return
-				}
+    function play_next_video(player = elements.player) {
+        elements.next_video = document.querySelector('ytd-playlist-panel-video-renderer[selected] + ytd-playlist-panel-video-renderer > a')
+        if(player.classList.contains('ended-mode')) {
+            let has_video_loop = elements.loop.querySelector('path')?.getAttribute('d').substring(0, 3) === 'M13'
+            //let ads = document.querySelector('.video-ads')
+            if(!has_video_loop) {
+                elements.next_video?.click()
+            }
+            //console.log('video-ended')
+        }
+        else if(!player.classList.contains('ytp-fit-cover-video')) {
+            elements.next_video?.click()
+            //console.log('video-cannot-start')
+        }
+    }
 
-				switch (globalThis.loop) {
-					case undefined:
-						globalThis.loop = 'playlist';
-						break;
-					case 'playlist':
-						globalThis.loop = 'video';
-						break;
-					case 'video':
-						delete globalThis.loop;
-				}
-				//console.log('loop');
-			});
+    function reset_loop(progress = elements.progress) {
+        if(!progress.hasAttribute('hidden')) {
+            loop.code = elements.loop.querySelector('path')?.getAttribute('d').substring(0, 3)
+            loop.value = loop.code.replace(/M\d+/, function(match) { return loop.map[match] || '' })
+            //console.log('progress-started')
+        }
+        else {
+            switch (loop.value) {
+                case 'video':
+                    elements.loop.click()
+                    /* falls through */
+                case 'playlist':
+                    setTimeout(function() { elements.loop.click() }, 1)
+            }
+            //console.log('progress-finished')
+        }
+    }
 
-			new MutationObserver(progress_mutations => {
-				for (const mutation of progress_mutations) {
-					if (progress.getAttribute('hidden') == '' && globalThis.hasOwnProperty('loop')) {
-						globalThis.skip_loop_click = true;
-						switch (globalThis.loop) {
-							case 'video':
-								loop.querySelector('button').click();
-								/* falls through */
-							case 'playlist':
-								setTimeout(() => loop.querySelector('button').click(), 1);
-						}
-						setTimeout(() => delete globalThis.skip_loop_click, 2);
-					}
-					//console.log('progress');
-				}
-			}).observe(progress, {
-				attributes: true
-			});
+    const player_observer = setInterval(function() {
+        if(elements.player && elements.next_video) {
+            clearInterval(player_observer)
+            play_next_video()
+            new MutationObserver(function(mutations) {
+                for(const mutation of mutations) {
+                    play_next_video(mutation.target)
+                }
+            }).observe(elements.player, {
+                attributeFilter: [ "class" ]
+            })
+        }
+        else {
+            elements.player = document.querySelector('div#movie_player')
+            elements.next_video = document.querySelector('ytd-playlist-panel-video-renderer[selected] + ytd-playlist-panel-video-renderer > a')
+        }
+    }, 500)
 
-			document_observer.disconnect();
-		}
-	}).observe(document, {
-		childList: true,
-		subtree: true
-	});
-	
-})();
+    const progress_observer = setInterval(function() {
+        if(elements.progress && elements.loop) {
+            clearInterval(progress_observer)
+            reset_loop()
+            new MutationObserver(function(mutations) {
+                for(const mutation of mutations) {
+                    reset_loop(mutation.target)
+                }
+            }).observe(elements.progress, {
+                attributeFilter: [ "hidden" ]
+            })
+        }
+        else {
+            elements.progress = document.querySelector('yt-page-navigation-progress')
+            elements.loop = document.querySelector('ytd-playlist-loop-button-renderer button')
+        }
+    }, 500)
+})()
