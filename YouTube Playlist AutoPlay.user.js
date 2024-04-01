@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name            YouTube Playlist AutoPlay
 // @namespace       https://github.com/crazyrabbit0
-// @version         2.1.0.test
+// @version         2.1.1.test
 // @description     AutoPlay next Playlist item in YouTube
 // @author          CrazyRabbit
 // @match           http://*.youtube.com/*
@@ -26,6 +26,11 @@
         next_video: null,
         progress: null,
         loop: null
+    }
+
+    let loaded = {
+        player: false,
+        progress: false
     }
 
     let loop = {
@@ -72,9 +77,9 @@
         }
     }
 
-    const player_observer = setInterval(function() {
-        if(elements.player && elements.next_video) {
-            clearInterval(player_observer)
+    let loaded_check = setInterval(function() {
+        if(!loaded.player && elements.player && elements.next_video) {
+            loaded.player = true
             play_next_video()
             new MutationObserver(function(mutations) {
                 for(const mutation of mutations) {
@@ -88,11 +93,9 @@
             elements.player = document.querySelector('div#movie_player')
             elements.next_video = document.querySelector('ytd-playlist-panel-video-renderer[selected] + ytd-playlist-panel-video-renderer > a')
         }
-    }, 500)
 
-    const progress_observer = setInterval(function() {
-        if(elements.progress && elements.loop) {
-            clearInterval(progress_observer)
+        if(!loaded.progress && elements.progress && elements.loop) {
+            loaded.progress = true
             reset_loop()
             new MutationObserver(function(mutations) {
                 for(const mutation of mutations) {
@@ -105,6 +108,11 @@
         else {
             elements.progress = document.querySelector('yt-page-navigation-progress')
             elements.loop = document.querySelector('ytd-playlist-loop-button-renderer button')
+        }
+
+        if(Object.values(loaded).every(Boolean)) {
+            clearInterval(loaded_check)
+            //console.log('all-elements-loaded')
         }
     }, 500)
 })()
