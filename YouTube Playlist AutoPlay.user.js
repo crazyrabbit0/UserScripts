@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name            YouTube Playlist AutoPlay
 // @namespace       https://github.com/crazyrabbit0
-// @version         2.0.0
+// @version         2.1.1
 // @description     AutoPlay next Playlist item in YouTube
 // @author          CrazyRabbit
 // @match           http://*.youtube.com/*
@@ -20,18 +20,19 @@
 
 (function() {
     'use strict'
-    
+
     let elements = {
         player: null,
+        next_video: null,
         progress: null,
         loop: null
     }
-    
+
     let loaded = {
         player: false,
         progress: false
     }
-    
+
     let loop = {
         code: null,
         value: null,
@@ -41,24 +42,48 @@
             'M13': 'video'
         }
     }
-    
-    let loaded_check = setInterval(function() {
-        if(!loaded.player && elements.player) {
-            loaded.player = true
 
+    function play_next_video(player = elements.player) {
+        elements.next_video = document.querySelector('ytd-playlist-panel-video-renderer[selected] + ytd-playlist-panel-video-renderer > a')
+        if(player.classList.contains('ended-mode')) {
+            let has_video_loop = elements.loop.querySelector('path')?.getAttribute('d').substring(0, 3) === 'M13'
+            //let ads = document.querySelector('.video-ads')
+            if(!has_video_loop) {
+                elements.next_video?.click()
+            }
+            //console.log('video-ended')
+        }
+        else if(!player.classList.contains('ytp-fit-cover-video')) {
+            elements.next_video?.click()
+            //console.log('video-cannot-start')
+        }
+    }
+
+    function reset_loop(progress = elements.progress) {
+        if(!progress.hasAttribute('hidden')) {
+            loop.code = elements.loop.querySelector('path')?.getAttribute('d').substring(0, 3)
+            loop.value = loop.code.replace(/M\d+/, function(match) { return loop.map[match] || '' })
+            //console.log('progress-started')
+        }
+        else {
+            switch (loop.value) {
+                case 'video':
+                    elements.loop.click()
+                    /* falls through */
+                case 'playlist':
+                    setTimeout(function() { elements.loop.click() }, 1)
+            }
+            //console.log('progress-finished')
+        }
+    }
+
+    let loaded_check = setInterval(function() {
+        if(!loaded.player && elements.player && elements.next_video) {
+            loaded.player = true
+            play_next_video()
             new MutationObserver(function(mutations) {
                 for(const mutation of mutations) {
-                    if(mutation.target.classList.contains('ended-mode')) {
-                        //let has_next_item   = document.querySelector('ytd-playlist-panel-video-renderer[selected] + ytd-playlist-panel-video-renderer') !== null
-                        let has_next_item = elements.player.querySelector('.ytp-next-button').href.includes('list=')
-                        let has_video_loop = elements.loop.querySelector('path')?.getAttribute('d').substring(0, 3) === 'M13'
-                        //let ads		      = document.querySelector('.video-ads')
-                        
-                        if(has_next_item && !has_video_loop) {
-                            elements.player.querySelector('.ytp-next-button').click()
-                        }
-                        //console.log('video-ended')
-                    }
+                    play_next_video(mutation.target)
                 }
             }).observe(elements.player, {
                 attributeFilter: [ "class" ]
@@ -66,28 +91,15 @@
         }
         else {
             elements.player = document.querySelector('div#movie_player')
+            elements.next_video = document.querySelector('ytd-playlist-panel-video-renderer[selected] + ytd-playlist-panel-video-renderer > a')
         }
-        
+
         if(!loaded.progress && elements.progress && elements.loop) {
             loaded.progress = true
-            
+            reset_loop()
             new MutationObserver(function(mutations) {
                 for(const mutation of mutations) {
-                    if(!mutation.target.hasAttribute('hidden')) {
-                        loop.code = elements.loop.querySelector('path')?.getAttribute('d').substring(0, 3)
-                        loop.value = loop.code.replace(/M\d+/, function(match) { return loop.map[match] || '' })
-                    }
-                    else {
-                        switch (loop.value) {
-                            case 'video':
-                                elements.loop.click()
-                                /* falls through */
-                            case 'playlist':
-                                setTimeout(function() { elements.loop.click() }, 1)
-                        }
-                        //console.log('progress-finished')
-                    }
-                    //console.log('progress-hidden-changed')
+                    reset_loop(mutation.target)
                 }
             }).observe(elements.progress, {
                 attributeFilter: [ "hidden" ]
@@ -97,10 +109,10 @@
             elements.progress = document.querySelector('yt-page-navigation-progress')
             elements.loop = document.querySelector('ytd-playlist-loop-button-renderer button')
         }
-        
+
         if(Object.values(loaded).every(Boolean)) {
             clearInterval(loaded_check)
-            //console.log('document-observer-removed')
+            //console.log('all-elements-loaded')
         }
     }, 500)
 })()
