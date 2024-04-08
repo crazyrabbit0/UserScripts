@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name            YouTube Playlist AutoPlay
 // @namespace       https://github.com/crazyrabbit0
-// @version         2.1.2
+// @version         2.1.3
 // @description     AutoPlay next Playlist item in YouTube
 // @author          CrazyRabbit
 // @match           http://*.youtube.com/*
@@ -53,7 +53,7 @@
             }
             //console.log('video-ended')
         }
-        else if(['ytp-hide-controls', 'unstarted-mode'].every(v => player.classList.contains(v))) {
+        else if(player.querySelector('.html5-ypc-title').innerText) {
             elements.next_video?.click()
             //console.log('video-cannot-start')
         }
