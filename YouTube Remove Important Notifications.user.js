@@ -11,9 +11,9 @@
 // @license         GPL-3.0-or-later; http://www.gnu.org/licenses/gpl-3.0.txt
 // @copyright       2023+, CrazyRabbit (https://github.com/crazyrabbit0)
 // @homepageURL     https://github.com/crazyrabbit0/UserScripts
-// @supportURL      https://github.com/crazyrabbit0/UserScripts/issues/new?assignees=crazyrabbit0&labels=help+wanted&template=&title=YouTube%20Remove%20Important%20Notification%20-%20Issue
-// @downloadURL     https://github.com/crazyrabbit0/UserScripts/raw/master/YouTube%20Remove%20Important%20Notification.user.js
-// @updateURL       https://github.com/crazyrabbit0/UserScripts/raw/master/YouTube%20Remove%20Important%20Notification.user.js
+// @supportURL      https://github.com/crazyrabbit0/UserScripts/issues/new?assignees=crazyrabbit0&labels=help+wanted&template=&title=YouTube%20Remove%20Important%20Notifications%20-%20Issue
+// @downloadURL     https://github.com/crazyrabbit0/UserScripts/raw/master/YouTube%20Remove%20Important%20Notifications.user.js
+// @updateURL       https://github.com/crazyrabbit0/UserScripts/raw/master/YouTube%20Remove%20Important%20Notifications.user.js
 // @run-at          document-start
 // @noframes
 // ==/UserScript==
