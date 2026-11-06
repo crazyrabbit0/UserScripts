@@ -42,7 +42,7 @@ The CI check (`.github/scripts/check-headers.mjs`) fails when a required key is 
 4. Run the checks locally before opening the pull request:
 
 ```sh
-npm install --no-save eslint@9 globals@16
+npm install --no-save --no-package-lock eslint@9 @eslint/js@9 globals@16
 npx eslint "*.user.js"
 node .github/scripts/check-headers.mjs
 ```
