@@ -38,7 +38,7 @@ The CI check (`.github/scripts/check-headers.mjs`) fails when a required key is 
 
 1. Bump `@version` in every change; userscript managers only update installed copies when it increases.
 2. Test the script in Tampermonkey or Violentmonkey on the sites it matches.
-3. Update the script's row in the [README](README.md) table when its version, sites or behaviour change, and add a row for a new script. The maintainer imports new scripts into [Greasy Fork](https://greasyfork.org/en/import) with automatic sync and adds the Greasy Fork link to that row.
+3. Update the script's row in the [README](README.md) table when its version, sites or behaviour change, and add a row for a new script. The maintainer imports new scripts into [Greasy Fork](https://greasyfork.org/en/import) and [OpenUserJS](https://openuserjs.org/user/add/scripts) and adds both links to that row; existing scripts on both sites update from GitHub on every push.
 4. Run the checks locally before opening the pull request:
 
 ```sh
