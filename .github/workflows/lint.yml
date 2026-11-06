@@ -1,0 +1,21 @@
+name: Lint
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-save --no-package-lock eslint@9 @eslint/js@9 globals@16
+      - run: npx eslint "*.user.js"
+      - run: node .github/scripts/check-headers.mjs
