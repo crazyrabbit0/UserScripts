@@ -1,11 +1,12 @@
 // ==UserScript==
 // @name         Distill - Simulate Tab Visibility
 // @namespace    https://github.com/crazyrabbit0
-// @version      1.1.0
+// @version      1.2.0
 // @description  Lets pages that only load in a visible tab also load in background tabs, e.g. Distill Web Monitor checks. Fakes tab visibility, animation frames and observers, and switches itself off once you view the tab.
 // @author       CrazyRabbit
 // @match        https://store.steampowered.com/news/*
 // @match        https://artificialanalysis.ai/*
+// @match        https://chromeenterprise.google/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=distill.io
 // @grant        none
 // @license      GPL-3.0-or-later; http://www.gnu.org/licenses/gpl-3.0.txt
